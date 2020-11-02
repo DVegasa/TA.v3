@@ -219,20 +219,20 @@ class M3u8Watcher:
               + "{:.3f}".format(self.__ts_buffer_duration__)
               + " сек)")
 
-        self.__start_tracking__(self.__cur_ts_file_name__)
+        self.__start_tracking__(self.__config__.name, self.__cur_ts_file_name__)
 
         self.__cur_ts_file_name__ = None
         self.__ts_buffer_duration__ = 0
 
-    def __start_tracking__(self, filename):
+    def __start_tracking__(self, cam_name, video_name):
         os.system('cmd /c '
                   + 'cd .. &'
                   + 'cd .. &'
                   + 'cd ./d &'
                 # + 'python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi')
                   + 'python object_tracker.py '
-                    '--video ../sd/data_storage/uTS/id0/alpha.ts '
-                    '--output ../sd/data_storage/uTS/id0/alpha.avi ')
+                    '--video ../sd/data_storage/uTS/' + cam_name + '/' + video_name + ' '
+                    '--output ../sd/data_storage/uTS/' + cam_name + '/' + video_name + '.avi ')
 
     def __generate_full_uTS_file_name__(self, ts_segment) -> str:
         # uTS_200814_T10:00:00.ts

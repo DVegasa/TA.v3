@@ -1,6 +1,6 @@
+
+После того, как поставил модели и прочую фигню:
+
 conda activate tracker-cpu
-python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi
------------
-cd ..
-cd ./d
-python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi
+cd sd
+python main.py
