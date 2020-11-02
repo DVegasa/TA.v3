@@ -229,7 +229,10 @@ class M3u8Watcher:
                   + 'cd .. &'
                   + 'cd .. &'
                   + 'cd ./d &'
-                  + 'python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi')
+                # + 'python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi')
+                  + 'python object_tracker.py '
+                    '--video ../sd/data_storage/uTS/id0/alpha.ts '
+                    '--output ../sd/data_storage/uTS/id0/alpha.avi ')
 
     def __generate_full_uTS_file_name__(self, ts_segment) -> str:
         # uTS_200814_T10:00:00.ts
