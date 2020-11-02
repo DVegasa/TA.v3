@@ -153,3 +153,4 @@ dmypy.json
 /weights/yolov3.tf.index
 /weights/yolov3.weights
 /weights/
+detection.txt

@@ -9,7 +9,7 @@ tag = "main"
 def main():
     with concurrent.futures.ThreadPoolExecutor() as executor:
         executor.submit(files.grab_and_write)
-        executor.submit(cams.powernet[0].start)
+        executor.submit(cams.powernet[3].start)
 
 
 if __name__ == '__main__':

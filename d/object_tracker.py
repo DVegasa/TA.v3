@@ -17,6 +17,7 @@ from deep_sort.detection import Detection
 from deep_sort.tracker import Tracker
 from tools import generate_detections as gdet
 from PIL import Image
+import csv
 
 flags.DEFINE_string('classes', './data/labels/coco.names', 'path to classes file')
 flags.DEFINE_string('weights', './weights/yolov3.tf',
@@ -75,7 +76,10 @@ def main(_argv):
         frame_index = -1 
     
     fps = 0.0
-    count = 0 
+    count = 0
+    cur_frame = 0
+    file_name = FLAGS.video[FLAGS.video.rfind('/')+1:]
+    print("$$$: " + file_name)
     while True:
         _, img = vid.read()
 
@@ -87,6 +91,8 @@ def main(_argv):
                 continue
             else: 
                 break
+
+        cur_frame = cur_frame + 1
 
         img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
         img_in = tf.expand_dims(img_in, 0)
@@ -123,6 +129,9 @@ def main(_argv):
                 continue 
             bbox = track.to_tlbr()
             class_name = track.get_class()
+
+            print_track("./tracker_output/" + file_name + ".csv", bbox, class_name, track.track_id, cur_frame)
+
             color = colors[int(track.track_id) % len(colors)]
             color = [i * 255 for i in color]
             cv2.rectangle(img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
@@ -152,11 +161,18 @@ def main(_argv):
         if cv2.waitKey(1) == ord('q'):
             break
     vid.release()
-    if FLAGS.ouput:
+    if FLAGS.output:
         out.release()
         list_file.close()
     cv2.destroyAllWindows()
 
+
+def print_track(filepath, bbox, class_name, id, frame):
+    centerX = bbox[0] + int(bbox[2] / 2)
+    centerY = bbox[1] - int(bbox[3] / 2)
+    with open(filepath, "a", newline='') as csv_file:
+        writer = csv.writer(csv_file, delimiter=',')
+        writer.writerow([frame, id, class_name, centerX, centerY])
 
 if __name__ == '__main__':
     try:

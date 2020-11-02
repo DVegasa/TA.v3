@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/d/data" />
+      <excludeFolder url="file://$MODULE_DIR$/d/tracker_output" />
       <excludeFolder url="file://$MODULE_DIR$/d/weights" />
       <excludeFolder url="file://$MODULE_DIR$/data/video" />
       <excludeFolder url="file://$MODULE_DIR$/sd/data_storage" />
