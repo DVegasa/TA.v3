@@ -1,0 +1,2 @@
+conda activate tracker-cpu
+python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi
