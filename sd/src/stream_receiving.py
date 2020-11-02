@@ -218,8 +218,18 @@ class M3u8Watcher:
         log.n(self.tag, "uTS закрыт: " + self.__cur_ts_file_name__ + " ("
               + "{:.3f}".format(self.__ts_buffer_duration__)
               + " сек)")
+
+        self.__start_tracking__(self.__cur_ts_file_name__)
+
         self.__cur_ts_file_name__ = None
         self.__ts_buffer_duration__ = 0
+
+    def __start_tracking__(self, filename):
+        os.system('cmd /c '
+                  + 'cd .. &'
+                  + 'cd .. &'
+                  + 'cd ./d &'
+                  + 'python object_tracker.py --video ./data/video/cars.ts --output ./data/video/cars1.avi')
 
     def __generate_full_uTS_file_name__(self, ts_segment) -> str:
         # uTS_200814_T10:00:00.ts
