@@ -19,6 +19,8 @@ from tools import generate_detections as gdet
 from PIL import Image
 import csv
 
+from analysis import analysis 
+
 flags.DEFINE_string('classes', './data/labels/coco.names', 'path to classes file')
 flags.DEFINE_string('weights', './weights/yolov3.tf',
                     'path to weights file')
@@ -36,6 +38,44 @@ def main(_argv):
     max_cosine_distance = 0.5
     nn_budget = None
     nms_max_overlap = 1.0
+
+    
+    roadParts = {
+        "влево": [
+            [1,768],
+            [58,870],
+            [197,806],
+            [421,607],
+            [450,468],
+            [253,456],
+            [118,451],
+            [42,453],
+            [-1,464]
+        ],
+        "вниз": [
+            [0,1076],
+            [1355,1076],
+            [1189,858],
+            [369,839],
+            [191,829],
+            [43,881]
+        ],
+        "вправо": [
+            [1121,622],
+            [1196,820],
+            [1581,805],
+            [1908,759],
+            [1806,486],
+            [1132,500]
+        ],
+        "вверх": [
+            [448,602],
+            [464,434],
+            [686,337],
+            [1004,327],
+            [1104,620]
+        ]
+    }
     
     #initialize deep sort
     model_filename = 'model_data/mars-small128.pb'
@@ -93,6 +133,8 @@ def main(_argv):
                 break
 
         cur_frame = cur_frame + 1
+        if cur_frame % 5 != 0:
+            continue
 
         img_in = cv2.cvtColor(img, cv2.COLOR_BGR2RGB) 
         img_in = tf.expand_dims(img_in, 0)
@@ -123,6 +165,12 @@ def main(_argv):
         # Call the tracker
         tracker.predict()
         tracker.update(detections)
+
+        for partName in roadParts:
+            part = roadParts[partName]
+            pts = np.array(part, np.int32) 
+            cv2.polylines(img,[pts],True,(0,255,255))
+        
 
         for track in tracker.tracks:
             if not track.is_confirmed() or track.time_since_update > 1:
@@ -160,6 +208,8 @@ def main(_argv):
         # press q to quit
         if cv2.waitKey(1) == ord('q'):
             break
+    
+    analysis(file_name, roadParts)
     vid.release()
     if FLAGS.output:
         out.release()
