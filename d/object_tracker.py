@@ -179,11 +179,18 @@ def main(_argv):
             class_name = track.get_class()
 
             print_track("./tracker_output/" + file_name + ".csv", bbox, class_name, track.track_id, cur_frame)
-
+            
+            
+            centerX = float(bbox[0]) + float((bbox[2] - bbox[0]) / 2)
+            centerY = float(bbox[1]) + float((bbox[3] - bbox[1]) / 2)
+            
             color = colors[int(track.track_id) % len(colors)]
             color = [i * 255 for i in color]
             cv2.rectangle(img, (int(bbox[0]), int(bbox[1])), (int(bbox[2]), int(bbox[3])), color, 2)
             cv2.rectangle(img, (int(bbox[0]), int(bbox[1]-30)), (int(bbox[0])+(len(class_name)+len(str(track.track_id)))*17, int(bbox[1])), color, -1)
+            cv2.circle(img, (int(bbox[0]), int(bbox[1])), 3, color, 2)
+            cv2.circle(img, (int(bbox[2]), int(bbox[3])), 3, color, 2)
+            cv2.circle(img, (int(centerX), int(centerY)), 5, color, 5)
             cv2.putText(img, class_name + "-" + str(track.track_id),(int(bbox[0]), int(bbox[1]-10)),0, 0.75, (255,255,255),2)
             
         ### UNCOMMENT BELOW IF YOU WANT CONSTANTLY CHANGING YOLO DETECTIONS TO BE SHOWN ON SCREEN
@@ -218,8 +225,8 @@ def main(_argv):
 
 
 def print_track(filepath, bbox, class_name, id, frame):
-    centerX = bbox[0] + int(bbox[2] / 2)
-    centerY = bbox[1] - int(bbox[3] / 2)
+    centerX = float(bbox[0]) + float((bbox[2] - bbox[0]) / 2)
+    centerY = float(bbox[1]) + float((bbox[3] - bbox[1]) / 2)
     with open(filepath, "a", newline='') as csv_file:
         writer = csv.writer(csv_file, delimiter=',')
         writer.writerow([frame, id, class_name, centerX, centerY])
