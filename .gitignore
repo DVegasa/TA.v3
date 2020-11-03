@@ -1,5 +1,7 @@
-/sd/data_storage/
-/sd/log.log
-/.idea/
-/d/test_output.csv
-/d/tracker_output/
+*.pyc
+configs
+data_storage
+outputs
+checkpoints
+
+*.log

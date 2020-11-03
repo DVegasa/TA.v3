@@ -1,6 +1,0 @@
-
-После того, как поставил модели и прочую фигню:
-
-conda activate tracker-cpu
-cd sd
-python main.py
