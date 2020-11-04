@@ -90,8 +90,10 @@ def main(_argv):
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
+        framesTotal = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
         codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
         out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
+
 
     frame_num = 0
     trackingData = {}
@@ -256,7 +258,7 @@ def main(_argv):
         if FLAGS.output:
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'): break
-    analysis(trackingData)
+    analysis(trackingData, FLAGS.output, "время")
     cv2.destroyAllWindows()
 
 if __name__ == '__main__':

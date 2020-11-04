@@ -1,9 +1,26 @@
 import shapely.geometry as geometry
+import sqlite3
+import datetime
 
-def analysis(objects):
-  
+
+def createBase(cursor):
+  cursor.execute(
+    """
+    CREATE TABLE if not exists cam7
+      (
+        ID INTEGER PRIMARY KEY,
+        FileName TEXT,
+        Timestamp DATETIME DEFAULT CURRENT_TIMESTAMP,
+        Горького INTEGER,
+        Рабочекрестьянская INTEGER,
+        Пушкина INTEGER,
+        Хлебокомбинат INTEGER
+      )
+    """)
+
+def analysis(objects, fileName, timestamp):
   roadParts = {
-    "влево": [
+    "Горького": [
       [1,768],
       [58,870],
       [197,806],
@@ -14,7 +31,7 @@ def analysis(objects):
       [42,453],
       [0,464]
     ],
-    "вниз": [
+    "Рабочекрестьянская": [
       [0,1076],
       [1355,1076],
       [1189,858],
@@ -22,7 +39,7 @@ def analysis(objects):
       [191,829],
       [43,881]
     ],
-    "вправо": [
+    "Пушкина": [
       [1121,622],
       [1196,820],
       [1581,805],
@@ -30,13 +47,20 @@ def analysis(objects):
       [1806,486],
       [1132,500]
     ],
-    "вверх": [
+    "Хлебокомбинат": [
       [448,602],
       [464,434],
       [686,337],
       [1004,327],
       [1104,620]
     ]
+  }
+
+  counter = {
+    "Горького": 0,
+    "Рабочекрестьянская": 0,
+    "Пушкина": 0,
+    "Хлебокомбинат": 0
   }
 
   trackingData = {}
@@ -82,5 +106,23 @@ def analysis(objects):
         trackingData[name]["directions"][0] = nameDirection;
       if (trajectory[1].intersects(directionHanlder)):
         trackingData[name]["directions"][1] = nameDirection;
+        counter[nameDirection] += 1
   
-  print(trackingData)
+  conn = sqlite3.connect("analysis.db")
+  cursor = conn.cursor()
+
+  createBase(cursor)
+  
+  inserting = ("INSERT INTO cam7 ( FileName, Timestamp, Горького, Рабочекрестьянская, Пушкина, Хлебокомбинат ) VALUES( \"" 
+                + str(fileName) + "\", \""
+                + str(timestamp) + "\", "
+                + str(counter["Горького"]) + ", "
+                + str(counter["Рабочекрестьянская"]) + ", "
+                + str(counter["Пушкина"]) + ", "
+                + str(counter["Хлебокомбинат"]) + " )")
+  
+  print(inserting)
+  
+  cursor.execute(inserting)
+  conn.commit()
+  conn.close()
