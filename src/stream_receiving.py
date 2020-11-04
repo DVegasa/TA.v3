@@ -9,6 +9,7 @@ import src.file_manager as files
 import src.formulator
 import src.log as log
 from src.data_models import TsSegment
+import src.detection_queue
 
 class M3u8Watcher:
     """
@@ -224,10 +225,12 @@ class M3u8Watcher:
         self.__ts_buffer_duration__ = 0
 
     def __start_tracking__(self, cam_name, video_name):
-        os.system('cmd /c '
-                  + 'python object_tracker.py --model yolov4 '
-                    '--video ./data_storage/uTS/' + cam_name + '/' + video_name + ' '
-                    '--output ./data_storage/uTS/' + cam_name + '/' + video_name + '.avi ')
+        path = './data_storage/uTS/' + cam_name + '/' + video_name
+        src.detection_queue.add_to_queue(path)
+        # os.system('cmd /c '
+        #           + 'python object_tracker.py --model yolov4 '
+        #             '--video ' + path + ' '
+        #             '--output ' + path + '.avi ')
 
     def __generate_full_uTS_file_name__(self, ts_segment) -> str:
         # uTS_200814_T10:00:00.ts
