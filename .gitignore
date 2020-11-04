@@ -1,5 +1,4 @@
 *.pyc
-configs
 data_storage
 outputs
 checkpoints

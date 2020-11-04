@@ -2,7 +2,11 @@ import datetime
 import os
 from threading import Lock
 
-import configs.log_config as cfg
+# Выводит лог в файл
+print_to_file = False
+
+# Выводит лог в консоль
+print_to_console = True
 
 """
 Класс для ведения лога. Может писать как в файл, так и в консоль (куда писать указывается в файле
@@ -42,9 +46,9 @@ def n(tag, msg):
     """ Выводит в лог нормальное сообщение, без сообщений об ошибке и без важны предупреждений """
     timestamp = datetime.datetime.now().time()
     logline = str(timestamp) + " N " + tag + ": " + msg
-    if cfg.print_to_console:
+    if print_to_console:
         __print_to_console__(logline)
-    if cfg.print_to_file:
+    if print_to_file:
         __print_to_file__(logline)
 
 
@@ -52,9 +56,9 @@ def w(tag, msg):
     """ Выводит в лог сообщение повышенной важности, на которое нужно обратить внимание """
     timestamp = datetime.datetime.now().time()
     logline = str(timestamp) + " W " + tag + ": " + msg
-    if cfg.print_to_console:
+    if print_to_console:
         __print_to_console__(logline)
-    if cfg.print_to_file:
+    if print_to_file:
         __print_to_file__(logline)
 
 
@@ -62,9 +66,9 @@ def e(tag, msg):
     """ Выводит в лог сообщение об ошибке """
     timestamp = datetime.datetime.now().time()
     logline = str(timestamp) + " E " + tag + ": " + msg
-    if cfg.print_to_console:
+    if print_to_console:
         __print_to_console__(logline)
-    if cfg.print_to_file:
+    if print_to_file:
         __print_to_file__(logline)
 
 
@@ -73,7 +77,7 @@ def e(tag, msg):
 #
 
 def __init__():
-    if not cfg.print_to_console and not cfg.print_to_file:
+    if not print_to_console and not print_to_file:
         logline = str(
             datetime.datetime.now().time()) + " W " + "log.py" + ": " + "Вывод лога отключён и в файл, и в консоль"
         __print_to_console__(logline)
