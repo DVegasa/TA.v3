@@ -227,10 +227,6 @@ class M3u8Watcher:
     def __start_tracking__(self, cam_name, video_name):
         path = './data_storage/uTS/' + cam_name + '/' + video_name
         src.detection_queue.add_to_queue(path)
-        # os.system('cmd /c '
-        #           + 'python object_tracker.py --model yolov4 '
-        #             '--video ' + path + ' '
-        #             '--output ' + path + '.avi ')
 
     def __generate_full_uTS_file_name__(self, ts_segment) -> str:
         # uTS_200814_T10:00:00.ts
