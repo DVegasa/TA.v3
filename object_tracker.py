@@ -100,6 +100,7 @@ def main(_argv):
     trackingData = {}
     st = getUnixTimeFromPath(video_path)
     seconds_from_start = 0
+    skipping_frame_rate = 3
 
     # while video is running
     while True:
@@ -112,7 +113,7 @@ def main(_argv):
             break
         frame_num += 1
 
-        if frame_num % 3 != 0:
+        if frame_num % skipping_frame_rate != 0:
             continue
 
         frame_size = frame.shape[:2]
@@ -173,7 +174,7 @@ def main(_argv):
         allowed_classes = ['bicycle', 'bus', 'car', 'truck', 'train', 'boat', 'motorbike']
         
         # custom allowed classes (uncomment line below to customize tracker for only people)
-        #allowed_classes = ['person']
+        # allowed_classes = ['person']
 
         # loop through objects and use class index to get class name, allow only classes in allowed_classes list
         names = []
@@ -237,7 +238,7 @@ def main(_argv):
             objectInfo = {
                 "frame": frame_num,
                 "dimensions": dimensions,
-            };
+            }
 
             if classUniq in trackingData.keys():
                 trackingData[classUniq].append(objectInfo)
@@ -267,8 +268,11 @@ def main(_argv):
         timestamp_unix = st + (frame_num // fps)
         timestamp = datetime.datetime.fromtimestamp(timestamp_unix).strftime("%Y-%m-%d %H:%M:%S")  # "2020-11-04 16:17:19"
         print("+++: " + timestamp + " | frame_num: " + str(frame_num) + " | fps: " + str(fps))
-        # analysis(trackingData, FLAGS.output, timestamp)
-        # trackingData = {}
+
+        if (frame_num // fps) != ((frame_num + skipping_frame_rate) // fps):
+            print("$$$$: Последний кадр на этой секунде. Пишу в БД")
+            analysis(trackingData, FLAGS.output, timestamp)
+            trackingData = {}
     cv2.destroyAllWindows()
 
 
