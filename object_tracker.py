@@ -26,6 +26,8 @@ from tools import generate_detections as gdet
 
 from analysis import analysis
 
+import datetime
+
 flags.DEFINE_string('framework', 'tf', '(tf, tflite, trt')
 flags.DEFINE_string('weights', './checkpoints/yolov4-416',
                     'path to weights file')
@@ -90,13 +92,15 @@ def main(_argv):
         width = int(vid.get(cv2.CAP_PROP_FRAME_WIDTH))
         height = int(vid.get(cv2.CAP_PROP_FRAME_HEIGHT))
         fps = int(vid.get(cv2.CAP_PROP_FPS))
-        framesTotal = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
+        framesTotal = int(vid.get(cv2.CAP_PROP_FRAME_COUNT))
         codec = cv2.VideoWriter_fourcc(*FLAGS.output_format)
         out = cv2.VideoWriter(FLAGS.output, codec, fps, (width, height))
 
-
     frame_num = 0
     trackingData = {}
+    start_time = getUnixTimeFromPath(video_path)
+    print("Start time is " + str(start_time))
+
     # while video is running
     while True:
         return_value, frame = vid.read()
@@ -106,8 +110,8 @@ def main(_argv):
         else:
             print('Video has ended or failed, try a different video format!')
             break
-        frame_num +=1
-        if (frame_num % 3 != 0):
+        frame_num += 1
+        if frame_num % 3 != 0:
             continue
 
         frame_size = frame.shape[:2]
@@ -258,8 +262,25 @@ def main(_argv):
         if FLAGS.output:
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'): break
-    analysis(trackingData, FLAGS.output, "время")
+
+    timestamp = ""  # "2020-11-04 16:17:19"
+    analysis(trackingData, FLAGS.output, timestamp)
     cv2.destroyAllWindows()
+
+
+def getUnixTimeFromPath(path):
+    # ./data_storage/uTS/id7/uTS_id7_201105_T143909_d.ts
+    print("Path: " + path)
+    path = str(path)
+    yy = int(path[31:33])
+    MM = int(path[33:35])
+    dd = int(path[35:37])
+    hh = int(path[39:41])
+    mm = int(path[41:43])
+    ss = int(path[43:45])
+    # (hh + 8) потому что: +4 часа на фикс времени камеры и ещё +4 чтобы перевести в UTC+4
+    return int(datetime.datetime(yy + 2000, MM, dd, hh + 8, mm, ss, 0).timestamp())
+
 
 if __name__ == '__main__':
     try:

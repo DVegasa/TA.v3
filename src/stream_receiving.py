@@ -235,7 +235,7 @@ class M3u8Watcher:
         # Если данный uTS не является неразрывным продолжением предыдущего,
         # то в его названии в конце добавляется флаг '_d'
         if self.__start_is_discontinuity__:
-            name = "d_" + name + ".ts"
+            name += "_d.ts"
             self.__start_is_discontinuity__ = False
         else:
             name += ".ts"

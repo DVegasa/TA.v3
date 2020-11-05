@@ -6,3 +6,4 @@ checkpoints
 *.log
 /.idea/
 analysis.db
+/configs/
