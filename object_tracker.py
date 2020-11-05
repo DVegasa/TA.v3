@@ -269,7 +269,7 @@ def main(_argv):
         timestamp = datetime.datetime.fromtimestamp(timestamp_unix).strftime("%Y-%m-%d %H:%M:%S")  # "2020-11-04 16:17:19"
         print("+++: " + timestamp + " | frame_num: " + str(frame_num) + " | fps: " + str(fps))
 
-        if (frame_num // fps) != ((frame_num + skipping_frame_rate) // fps):
+        if (frame_num // (fps*60)) != ((frame_num + skipping_frame_rate) // (fps*60)):
             print("$$$$: Последний кадр на этой секунде. Пишу в БД")
             analysis(trackingData, FLAGS.output, timestamp)
             trackingData = {}
