@@ -85,7 +85,7 @@ def main(_argv):
         vid = cv2.VideoCapture(video_path)
 
     out = None
-
+    fps = 0
     # get video ready to save locally if flag is set
     if FLAGS.output:
         # by default VideoCapture returns float instead of int
@@ -98,8 +98,8 @@ def main(_argv):
 
     frame_num = 0
     trackingData = {}
-    start_time = getUnixTimeFromPath(video_path)
-    print("Start time is " + str(start_time))
+    st = getUnixTimeFromPath(video_path)
+    seconds_from_start = 0
 
     # while video is running
     while True:
@@ -111,6 +111,7 @@ def main(_argv):
             print('Video has ended or failed, try a different video format!')
             break
         frame_num += 1
+
         if frame_num % 3 != 0:
             continue
 
@@ -250,7 +251,7 @@ def main(_argv):
                 print("Tracker ID: {}, Class: {},  BBox Coords (xmin, ymin, xmax, ymax): {}".format(str(track.track_id), class_name, (int(bbox[0]), int(bbox[1]), int(bbox[2]), int(bbox[3]))))
 
         # calculate frames per second of running detections
-        fps = 1.0 / (time.time() - start_time)
+        src_fps = 1.0 / (time.time() - start_time)
         
         result = np.asarray(frame)
         result = cv2.cvtColor(frame, cv2.COLOR_RGB2BGR)
@@ -263,8 +264,11 @@ def main(_argv):
             out.write(result)
         if cv2.waitKey(1) & 0xFF == ord('q'): break
 
-    timestamp = ""  # "2020-11-04 16:17:19"
-    analysis(trackingData, FLAGS.output, timestamp)
+        timestamp_unix = st + (frame_num // fps)
+        timestamp = datetime.datetime.fromtimestamp(timestamp_unix).strftime("%Y-%m-%d %H:%M:%S")  # "2020-11-04 16:17:19"
+        print("+++: " + timestamp + " | frame_num: " + str(frame_num) + " | fps: " + str(fps))
+        # analysis(trackingData, FLAGS.output, timestamp)
+        # trackingData = {}
     cv2.destroyAllWindows()
 
 
